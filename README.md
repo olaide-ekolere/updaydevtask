@@ -46,7 +46,7 @@ _flutter build -t lib/shuttershock_production_
 _AndroidStudio_ allows us to
 [create environment specific config](https://iirokrankka.com/2018/03/02/separating-build-environments#creating-environment-specific-run-configurations-in-intellij-idea--android-studio)
 so we dont need to run via the command line.
-A full detailed article can be on environments can be found
+A full detailed article on environments can be found
 [here](https://iirokrankka.com/2018/03/02/separating-build-environments/)
 
 ### Localization
@@ -113,7 +113,77 @@ from BLOC class.
 ![The BLOC Pattern](https://miro.medium.com/max/1400/1*MqYPYKdNBiID0mZ-zyE-mA.png)
 This pattern was choosen over the others because it was custom made for the
 flutter framework and i find it amazing and easy to use due to its reactive
-nature and adaptive UI.
+nature and adaptive UI.\
+We will use the [RxDart](https://pub.dartlang.org/packages/rxdart) package along with
+the BLOC pattern. The RxDart package is an implementation for Dart of the
+[ReactiveX](http://reactivex.io/) API,
+which extends the original Dart Streams API to comply with the ReactiveX standards.
+
+### Code Base
+First we create the ImageSearchItem object which will represent each image search result
+returned.
+```
+class ImageSearchItem {
+  final String url;
+  final String description;
+
+  ImageSearchItem(
+    this.url,
+    this.description,
+  )   : assert(url != null),
+        assert(description != null);
+}
+```
+Then we create the ImageSearchResult object which will be responsible for hold all
+necessary information about a completed image search.
+```
+import 'package:upday_dev_task/model/image_search_item.dart';
+
+class ImageSearchResult {
+  final String searchPhrase;
+  final int countPerPage;
+  final int totalNumberPages;
+
+  List<ImageSearchItem> _imageSearchItems = [];
+  int _currentPage;
+
+  ImageSearchResult.initWithImageSearchItems(
+    this.searchPhrase,
+    this.countPerPage,
+    this.totalNumberPages,
+    List<ImageSearchItem> imageSearchItems, {
+    int currentPage = 1,
+  })  : assert(searchPhrase != null),
+        assert(countPerPage != null),
+        assert(imageSearchItems != null) {
+    this._currentPage = currentPage;
+    _imageSearchItems.addAll(imageSearchItems);
+  }
+
+  addNextPage(
+    List<ImageSearchItem> imageSearchItems,
+  ) {
+    assert((_currentPage == (totalNumberPages - 1)) ||
+        (_currentPage != (totalNumberPages - 1) &&
+        imageSearchItems.length == countPerPage));
+    _currentPage += 1;
+  }
+
+  bool get isEmpty => _imageSearchItems.length == 0;
+
+  int get currentPage => _currentPage;
+
+  List<ImageSearchItem> get imageSearchItems => _imageSearchItems;
+
+  bool get canLoadMore => currentPage != totalNumberPages;
+}
+```
+This class contains all the logic required to handle the result a successful image search
+operation. It will handle the paging and loading more logic.
+_test/model/image_search_result_test.dart_, unit
+test class is created to test that the class handles all the logic correctly.\
+
+
 
 
 
