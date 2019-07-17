@@ -7,12 +7,13 @@ class ImageSearchResult {
 
   List<ImageSearchItem> _imageSearchItems = [];
   int _currentPage;
+  bool loadingMore = false;
 
   ImageSearchResult.initWithImageSearchItems(
+    List<ImageSearchItem> imageSearchItems, {
     this.searchPhrase,
     this.countPerPage,
     this.totalNumberPages,
-    List<ImageSearchItem> imageSearchItems, {
     int currentPage = 1,
   })  : assert(searchPhrase != null),
         assert(countPerPage != null),
@@ -26,13 +27,15 @@ class ImageSearchResult {
   ) {
     assert((_currentPage == (totalNumberPages - 1)) ||
         (_currentPage != (totalNumberPages - 1) &&
-        imageSearchItems.length == countPerPage));
+            imageSearchItems.length == countPerPage));
     _currentPage += 1;
   }
 
   bool get isEmpty => _imageSearchItems.length == 0;
 
   int get currentPage => _currentPage;
+
+  int get nextPage => _currentPage + 1;
 
   List<ImageSearchItem> get imageSearchItems => _imageSearchItems;
 

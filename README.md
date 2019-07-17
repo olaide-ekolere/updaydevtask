@@ -29,7 +29,7 @@ For example the development environment can use a different
 clientID and clientSecret from the one in production. This will
 also be very useful when requirements change that we do not
 want to break our tests. For example if the we decide to change
-the image search provider from Shutterstock to maybe unsplash
+the image search provider from Shutterstock to maybe [Unsplash][unsplash link]
 or any other image search provider. We will show how this is done
 in the [Whatever]() section.
 ###### Configuration Object
@@ -103,23 +103,7 @@ acceptance criteria. We will be using the flutter
 to [mock](https://flutter.dev/docs/cookbook/testing/unit/mocking)
  data for our tests
 
-### BLOC Pattern
-We will be using the BLOC pattern architecture for this application.
-We will like to separate Business Logic and other logical parts of
-the application. BLOC will never have any reference of the Widgets
-in the UI Screen. The UI screen will only observe changes coming
-from BLOC class.
-
-![The BLOC Pattern](https://miro.medium.com/max/1400/1*MqYPYKdNBiID0mZ-zyE-mA.png)
-This pattern was choosen over the others because it was custom made for the
-flutter framework and i find it amazing and easy to use due to its reactive
-nature and adaptive UI.\
-We will use the [RxDart](https://pub.dartlang.org/packages/rxdart) package along with
-the BLOC pattern. The RxDart package is an implementation for Dart of the
-[ReactiveX](http://reactivex.io/) API,
-which extends the original Dart Streams API to comply with the ReactiveX standards.
-
-### Code Base
+### Models
 First we create the ImageSearchItem object which will represent each image search result
 returned.
 ```
@@ -181,7 +165,127 @@ class ImageSearchResult {
 This class contains all the logic required to handle the result a successful image search
 operation. It will handle the paging and loading more logic.
 _test/model/image_search_result_test.dart_, unit
-test class is created to test that the class handles all the logic correctly.\
+test class is created to test that the class handles all the logic correctly.
+
+### Data
+We will create an abstract class called _ImageSearchDataProvider_ that will handle
+fetching of the results from the API.
+```
+import 'package:upday_dev_task/model/image_search_operation.dart';
+
+abstract class ImageSearchDataProvider{
+  Future<ImageSearchOperation> getImageSearchResults(String searchPhrase, int pageCount, int page);
+}
+```
+Using an abstract class allows us to change the datasource just incase the
+requirements changes. The Shutterstock datasource with extend this class and
+provide its own implementation.\
+```
+import 'package:upday_dev_task/data/image_search_data_provider.dart';
+import 'package:upday_dev_task/model/image_search_operation.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+class ShutterStockDataProvider extends ImageSearchDataProvider {
+  final SharedPreferences preferences;
+  final http.Client client;
+  final String clientId;
+  final String clientSecret;
+
+  ShutterStockDataProvider(
+    this.preferences,
+    this.client, {
+    this.clientId,
+    this.clientSecret,
+  });
+
+  @override
+  Future<ImageSearchOperation> getImageSearchResults(
+      String searchPhrase, int pageCount, int page) {
+    // TODO: implement getImageSearchResults
+    return null;
+  }
+}
+```
+if the reqquirement changes later to another datasource like maybe
+[Unsplash][unsplash link] instead of Shutterstock, a new implementation
+of ImageSearchDataProvider will be provided without breaking anything.\
+Our assumption is that each environment will use a different datasource so our
+AppConfig class will contain the datasource.\
+```
+import 'package:flutter/material.dart';
+import 'package:upday_dev_task/data/image_search_data_provider.dart';
+
+class AppConfig extends InheritedWidget {
+  final ImageSearchDataProvider imageSearchDataProvider;
+
+  AppConfig({
+    this.imageSearchDataProvider,
+    Widget child,
+  }) : super(child: child);
+
+  static AppConfig of(BuildContext context) =>
+      context.inheritFromWidgetOfExactType(AppConfig);
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) => false;
+}
+```
+So our entry point main files will now look like this
+```
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:upday_dev_task/app/app.dart';
+import 'package:upday_dev_task/app/app_config.dart';
+import 'package:upday_dev_task/data/shutter_stock_data_provider.dart';
+
+void main() async {
+  var preferences = await SharedPreferences.getInstance();
+  var client = http.Client();
+  var configuredApp = AppConfig(
+    imageSearchDataProvider: ShutterStockDataProvider(
+      preferences,
+      client,
+      clientId: 'd0c6b-c141e-00f1e-7067a-f1440-c2ecc',
+      clientSecret: '89028-7b04b-07ed8-f051b-01af2-43cf1',
+    ),
+    child: UpdayTaskApp(preferences, client),
+  );
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((_) => runApp(configuredApp));
+  //runApp(UpdayTaskApp(preferences, client));
+}
+```
+
+
+
+### BLOC Pattern
+We will be using the BLOC pattern architecture for this application.
+We will like to separate Business Logic and other logical parts of
+the application. BLOC will never have any reference of the Widgets
+in the UI Screen. The UI screen will only observe changes coming
+from BLOC class.
+
+![The BLOC Pattern](https://miro.medium.com/max/1400/1*MqYPYKdNBiID0mZ-zyE-mA.png)
+This pattern was choosen over the others because it was custom made for the
+flutter framework and i find it amazing and easy to use due to its reactive
+nature and adaptive UI.\
+We will use the [RxDart](https://pub.dartlang.org/packages/rxdart) package along with
+the BLOC pattern. The RxDart package is an implementation for Dart of the
+[ReactiveX](http://reactivex.io/) API,
+which extends the original Dart Streams API to comply with the ReactiveX standards.\
+So now we create the BLOC component to hold the _ImageSearchResult_ object. It will
+also have an _ImageSearchDataProvider_ object to fetch data from whatever datasource
+is injected into it. We will create an abstract _BlocBase_ class for our BLOC to
+extend so we can enforce the dispose method to dispose a BLOC when no longer needed.
+```
+abstract class BlocBase{
+  void dispose();
+}
+```
 
 
 
@@ -191,3 +295,6 @@ test class is created to test that the class handles all the logic correctly.\
 
 
 
+
+
+[unsplash link]: https://unsplash.com/

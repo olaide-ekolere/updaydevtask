@@ -6,52 +6,53 @@ void main() {
   group('Image Search Result', () {
     test('Verify when empty', () {
       final imageSearchResult = ImageSearchResult.initWithImageSearchItems(
-        'searchPhrase',
-        10,
-        0,
         <ImageSearchItem>[],
+        searchPhrase: 'searchPhrase',
+        countPerPage: 10,
+        totalNumberPages: 0,
       );
       expect(imageSearchResult.isEmpty, true);
     });
 
     test('Verify can load more', (){
       final imageSearchResult = ImageSearchResult.initWithImageSearchItems(
-        'searchPhrase',
-        1,
-        10,
         <ImageSearchItem>[ImageSearchItem('url', 'description')],
+        searchPhrase: 'searchPhrase',
+        countPerPage: 1,
+        totalNumberPages: 10,
       );
       expect(imageSearchResult.canLoadMore, true);
     });
 
     test('Verify no more pages', (){
       final imageSearchResult = ImageSearchResult.initWithImageSearchItems(
-        'searchPhrase',
-        1,
-        1,
         <ImageSearchItem>[ImageSearchItem('url', 'description')],
+        searchPhrase: 'searchPhrase',
+        countPerPage: 1,
+        totalNumberPages: 1,
       );
       expect(imageSearchResult.canLoadMore, false);
     });
 
-    test('Page number Increases when page added and can loading more', (){
+    test('Page number Increases when page added, next page and can loading more', (){
       final imageSearchResult = ImageSearchResult.initWithImageSearchItems(
-        'searchPhrase',
-        1,
-        10,
         <ImageSearchItem>[ImageSearchItem('url', 'description')],
+        searchPhrase: 'searchPhrase',
+        countPerPage: 1,
+        totalNumberPages: 10,
       );
       imageSearchResult.addNextPage(<ImageSearchItem>[ImageSearchItem('url', 'description')]);
       expect(imageSearchResult.currentPage, 2);
+      expect(imageSearchResult.nextPage, 3);
       expect(imageSearchResult.canLoadMore, true);
     });
 
     test('Page number Increases when page added and no more pages', (){
       final imageSearchResult = ImageSearchResult.initWithImageSearchItems(
-        'searchPhrase',
-        1,
-        2,
         <ImageSearchItem>[ImageSearchItem('url', 'description')],
+        searchPhrase: 'searchPhrase',
+        countPerPage: 1,
+        totalNumberPages: 2,
       );
       imageSearchResult.addNextPage(<ImageSearchItem>[ImageSearchItem('url', 'description')]);
       expect(imageSearchResult.currentPage, 2);
