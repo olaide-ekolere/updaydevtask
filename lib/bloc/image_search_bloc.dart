@@ -14,4 +14,11 @@ class ImageSearchBloc extends BlocBase{
     imageSearchResultBloc.dispose();
   }
 
+  @override
+  cancelOperation() {
+    // TODO: implement cancelOperation
+    imageSearchPhraseBloc.cancelOperation();
+    imageSearchResultBloc.cancelOperation();
+  }
+
 }

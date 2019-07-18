@@ -53,4 +53,10 @@ class ImageSearchResultBloc extends BlocBase {
     _imageSearchResult.addNextPage(imageSearchItems);
     _inImageSearchResult.add(_imageSearchResult);
   }
+
+  @override
+  cancelOperation() {
+    // TODO: implement cancelOperation
+    return null;
+  }
 }

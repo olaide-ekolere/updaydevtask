@@ -105,7 +105,7 @@ to [mock](https://flutter.dev/docs/cookbook/testing/unit/mocking)
 
 ### Models
 First we create the ImageSearchItem object which will represent each image search result
-returned.
+returned in our second user story **(US_02)**.
 ```
 class ImageSearchItem {
   final String url;
@@ -164,22 +164,27 @@ class ImageSearchResult {
 ```
 This class contains all the logic required to handle the result a successful image search
 operation. It will handle the paging and loading more logic.
-_test/model/image_search_result_test.dart_, unit
+[image_search_result_test.dart](https://github.com/olaide-ekolere/updaydevtask/blob/master/test/model/image_search_result_test.dart)
+, unit
 test class is created to test that the class handles all the logic correctly.
 
 ### Data
 We will create an abstract class called _ImageSearchDataProvider_ that will handle
-fetching of the results from the API.
+fetching of the results from the API in our second user story **(US_02)**.
 ```
+import 'package:upday_dev_task/model/image_search_item.dart';
 import 'package:upday_dev_task/model/image_search_operation.dart';
 
 abstract class ImageSearchDataProvider{
   Future<ImageSearchOperation> getImageSearchResults(String searchPhrase, int pageCount, int page);
+  ImageSearchItem getImageSearchItemFromJson(Map<String, dynamic> json);
 }
 ```
 Using an abstract class allows us to change the datasource just incase the
-requirements changes. The Shutterstock datasource with extend this class and
-provide its own implementation.\
+requirements changes. The abstract class forces each datasource to parse its
+own ImageSearchObject since they all wont have the same data structure.
+ The Shutterstock datasource with extend this class and
+provide its own implementation.
 ```
 import 'package:upday_dev_task/data/image_search_data_provider.dart';
 import 'package:upday_dev_task/model/image_search_operation.dart';
@@ -205,13 +210,22 @@ class ShutterStockDataProvider extends ImageSearchDataProvider {
     // TODO: implement getImageSearchResults
     return null;
   }
+
+  @override
+  ImageSearchItem getImageSearchItemFromJson(Map<String, dynamic> json) {
+    // TODO: implement getImageSearchItemFromJson
+    return null;
+  }
 }
 ```
-if the reqquirement changes later to another datasource like maybe
+if the requirement changes later to another datasource like maybe
 [Unsplash][unsplash link] instead of Shutterstock, a new implementation
 of ImageSearchDataProvider will be provided without breaking anything.\
 Our assumption is that each environment will use a different datasource so our
 AppConfig class will contain the datasource.\
+The implementations for the methods are provided so that
+[shutter_stock_data_provider_test.dart](https://github.com/olaide-ekolere/updaydevtask/blob/master/test/data/shutter_stock_data_provider_test.dart)
+test is written to test the ShutterStock datasource.
 ```
 import 'package:flutter/material.dart';
 import 'package:upday_dev_task/data/image_search_data_provider.dart';

@@ -16,7 +16,7 @@ void main() {
 
     test('Verify can load more', (){
       final imageSearchResult = ImageSearchResult.initWithImageSearchItems(
-        <ImageSearchItem>[ImageSearchItem('url', 'description')],
+        <ImageSearchItem>[ImageSearchItem(url: 'url', description: 'description', width: 10, height: 10)],
         searchPhrase: 'searchPhrase',
         countPerPage: 1,
         totalNumberPages: 10,
@@ -26,7 +26,7 @@ void main() {
 
     test('Verify no more pages', (){
       final imageSearchResult = ImageSearchResult.initWithImageSearchItems(
-        <ImageSearchItem>[ImageSearchItem('url', 'description')],
+        <ImageSearchItem>[ImageSearchItem(url: 'url', description: 'description', width: 10, height: 10)],
         searchPhrase: 'searchPhrase',
         countPerPage: 1,
         totalNumberPages: 1,
@@ -36,12 +36,12 @@ void main() {
 
     test('Page number Increases when page added, next page and can loading more', (){
       final imageSearchResult = ImageSearchResult.initWithImageSearchItems(
-        <ImageSearchItem>[ImageSearchItem('url', 'description')],
+        <ImageSearchItem>[ImageSearchItem(url: 'url', description: 'description', width: 10, height: 10)],
         searchPhrase: 'searchPhrase',
         countPerPage: 1,
         totalNumberPages: 10,
       );
-      imageSearchResult.addNextPage(<ImageSearchItem>[ImageSearchItem('url', 'description')]);
+      imageSearchResult.addNextPage(<ImageSearchItem>[ImageSearchItem(url: 'url', description: 'description', width: 10, height: 10)]);
       expect(imageSearchResult.currentPage, 2);
       expect(imageSearchResult.nextPage, 3);
       expect(imageSearchResult.canLoadMore, true);
@@ -49,12 +49,12 @@ void main() {
 
     test('Page number Increases when page added and no more pages', (){
       final imageSearchResult = ImageSearchResult.initWithImageSearchItems(
-        <ImageSearchItem>[ImageSearchItem('url', 'description')],
+        <ImageSearchItem>[ImageSearchItem(url: 'url', description: 'description', width: 10, height: 10)],
         searchPhrase: 'searchPhrase',
         countPerPage: 1,
         totalNumberPages: 2,
       );
-      imageSearchResult.addNextPage(<ImageSearchItem>[ImageSearchItem('url', 'description')]);
+      imageSearchResult.addNextPage(<ImageSearchItem>[ImageSearchItem(url: 'url', description: 'description', width: 10, height: 10)]);
       expect(imageSearchResult.currentPage, 2);
       expect(imageSearchResult.canLoadMore, false);
     });

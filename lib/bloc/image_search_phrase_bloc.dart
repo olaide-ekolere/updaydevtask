@@ -53,4 +53,10 @@ class ImageSearchPhraseBloc extends BlocBase {
 
   set searchStatus(SearchStatus searchStatus) =>
       _inSearchStatus.add(searchStatus);
+
+  @override
+  cancelOperation() {
+    // TODO: implement cancelOperation
+    return null;
+  }
 }

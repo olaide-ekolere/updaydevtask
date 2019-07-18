@@ -1,10 +1,16 @@
 class ImageSearchItem {
   final String url;
   final String description;
+  final int width;
+  final int height;
 
-  ImageSearchItem(
+  ImageSearchItem({
     this.url,
     this.description,
-  )   : assert(url != null),
-        assert(description != null);
+    this.width,
+    this.height,
+  })  : assert(url != null),
+        assert(description != null),
+        assert(width != null),
+        assert(height != null);
 }
