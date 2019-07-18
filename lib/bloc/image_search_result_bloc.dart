@@ -5,6 +5,8 @@ import 'package:upday_dev_task/model/Image_search_result.dart';
 import 'package:upday_dev_task/model/image_search_item.dart';
 
 class ImageSearchResultBloc extends BlocBase {
+  final ImageSearchDataProvider imageSearchDataProvider;
+  ImageSearchResultBloc(this.imageSearchDataProvider);
   BehaviorSubject<ImageSearchResult> _imageSearchResultController =
       BehaviorSubject<ImageSearchResult>();
 
@@ -28,9 +30,7 @@ class ImageSearchResultBloc extends BlocBase {
     _inImageSearchResult.add(_imageSearchResult);
   }
 
-  loadNextPage(
-    ImageSearchDataProvider imageSearchDataProvider,
-  ) async {
+  loadNextPage() async {
     _imageSearchResult.loadingMore = true;
     _inImageSearchResult.add(_imageSearchResult);
 
@@ -40,7 +40,7 @@ class ImageSearchResultBloc extends BlocBase {
       _imageSearchResult.currentPage + 1,
     ).then((imageSearchOperation){
       if(imageSearchOperation.succeeded){
-        _imageSearchResult.addNextPage(imageSearchOperation.results.imageSearchItems);
+        _addNextPage(imageSearchOperation.results.imageSearchItems);
       }
       _imageSearchResult.loadingMore = false;
 

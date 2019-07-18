@@ -315,9 +315,14 @@ will hold the different states of the ImageSearchWidget which is represented by 
 enum SearchStatus { Initialized, Fetching, Error, Done }
 ```
 Then the
-[image_search_phrase_bloc_test.dart]()
+[image_search_phrase_bloc_test.dart](https://github.com/olaide-ekolere/updaydevtask/blob/master/test/bloc/image_search_phrase_bloc_test.dart)
 is written to check that all state changes are handled well.\
 Next we create the
+[ImageSearchResultBloc](https://github.com/olaide-ekolere/updaydevtask/blob/master/lib/bloc/image_search_result_bloc.dart)
+ for receiving the results of
+the first page and loading other subsequent pages.
+[image_search_result_bloc_test.dart]()
+test is created test that it works as it is intended to.
 
 
 
