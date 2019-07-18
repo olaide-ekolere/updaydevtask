@@ -33,7 +33,8 @@ the image search provider from Shutterstock to maybe [Unsplash][unsplash link]
 or any other image search provider. We will show how this is done
 in the [Whatever]() section.
 ###### Configuration Object
-The _app/app_config.dart_  which is an InheritedWidget holds
+The _app/app_config.dart_  which is an
+[InheritedWidget][inherited widget] holds
 all the environment-dependent information which will take our
 _MaterialApp_ instance as its child.
 ###### Entry point files
@@ -321,8 +322,90 @@ Next we create the
 [ImageSearchResultBloc](https://github.com/olaide-ekolere/updaydevtask/blob/master/lib/bloc/image_search_result_bloc.dart)
  for receiving the results of
 the first page and loading other subsequent pages.
-[image_search_result_bloc_test.dart]()
+[image_search_result_bloc_test.dart](https://github.com/olaide-ekolere/updaydevtask/blob/master/test/bloc/image_search_result_bloc_test.dart)
 test is created test that it works as it is intended to.
+### BLOC Provider
+Using the BLOC pattern has given us the ability to
+* Seperate Responsibilities
+* Testability
+* Freedom to organize our layout
+* Reduction in the number of builds (because we will be using the
+[StreamBuilder](https://www.youtube.com/watch?v=MkKEWHfy99Y)
+in our widgets
+
+The only thing left is the accessibility of the BLOC and we can do this in any of
+following 3 ways
+* Singleton\
+This way is very possible but not really recommended. Also as there is no class
+destructor in Dart, you will never be able to release the resources properly.
+* Local Instance\
+You may instantiate a local instance of a BLoC. Under some circumstances,
+this solution perfectly fits some needs. In this case, you should always consider
+initializing inside a StatefulWidget so that you can take profit of the dispose()
+method to free it up.
+* Ancestor\
+The most common way of making it accessible is via an ancestor Widget, implemented
+as a StatefulWidget. This is the approach we will be using.
+
+So we will create the BlocProvider class for this purpose
+```
+class BlocProvider<T extends BlocBase> extends StatefulWidget {
+  BlocProvider({
+    Key key,
+    @required this.child,
+    @required this.bloc,
+  }): super(key: key);
+
+  final T bloc;
+  final Widget child;
+
+  @override
+  _BlocProviderState<T> createState() => _BlocProviderState<T>();
+
+  static T of<T extends BlocBase>(BuildContext context){
+    final type = _typeOf<BlocProvider<T>>();
+    BlocProvider<T> provider = context.ancestorWidgetOfExactType(type);
+    return provider.bloc;
+  }
+
+  static Type _typeOf<T>() => T;
+}
+
+class _BlocProviderState<T> extends State<BlocProvider<BlocBase>>{
+  @override
+  void dispose(){
+    widget.bloc.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context){
+    return widget.child;
+  }
+}
+```
+With this we can simply instantiate a BlocProvider which will handle
+a BLOC and will render a Widget along with it
+```
+BlocProvider<OurBloc>(
+    bloc: OurBloc(),
+    child: OurWidget(),
+)
+```
+So we can easily retrieve the BLOC as shown below
+```
+Widget build(BuildContext context) {
+    // TODO: implement build
+    final OurBloc ourBloc =  BlocProvider.of<OurBloc>(context);
+    return null;
+}
+ ```
+We could have used an
+[InheritedWidget][inherited widget] instead of a StatefulWidget but it
+does not have a _dispose_ method as we plan to pair each BLOC with each
+Widget and the would need to be disposed off when the widget no longer
+exists
+
 
 
 
@@ -333,3 +416,4 @@ test is created test that it works as it is intended to.
 
 
 [unsplash link]: https://unsplash.com/
+[inherited widget]: https://www.youtube.com/watch?v=1t-8rBCGBYw

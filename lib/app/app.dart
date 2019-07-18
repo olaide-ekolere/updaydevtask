@@ -9,6 +9,7 @@ import 'package:upday_dev_task/splash_screen.dart';
 import 'package:http/http.dart' as http;
 
 bool useMobileLayout;
+
 ThemeData _buildTheme() {
   ThemeData base = ThemeData.light();
   return base.copyWith(
