@@ -72,11 +72,14 @@ To make the user stories testable we define the acceptance criteria
 for each one
 * **US_01**: As a user, i can type a search phrase so that
  i can search available images
-   * **Criteria 1**: Typing search phrase\
+   * **Criteria 1**: Search Page Launched\
+   Given the search page is initialized when the user navigates to it
+    then the user should be instructed to start a search
+   * **Criteria 2**: Typing search phrase\
    Given the search phrase is at least two
    characters when the user types then the search button should
    be enabled
-   * **Criteria 2**: Initiate the images search\
+   * **Criteria 3**: Initiate the images search\
    Given the user taps on the search button
    when it is enabled then the paginated image search should start
 * **US_02**: As a user, i can view all the images that match my
@@ -181,7 +184,8 @@ abstract class ImageSearchDataProvider{
 }
 ```
 Using an abstract class allows us to change the datasource just incase the
-requirements changes. The abstract class forces each datasource to parse its
+requirements changes. Doing it this way allows us to mock the class for our test.
+The abstract class forces each datasource to parse its
 own ImageSearchObject since they all wont have the same data structure.
  The Shutterstock datasource with extend this class and
 provide its own implementation.
@@ -293,15 +297,27 @@ the BLOC pattern. The RxDart package is an implementation for Dart of the
 which extends the original Dart Streams API to comply with the ReactiveX standards.\
 So now we create the BLOC component to hold the _ImageSearchResult_ object. It will
 also have an _ImageSearchDataProvider_ object to fetch data from whatever datasource
-is injected into it. We will create an abstract _BlocBase_ class for our BLOC to
+is injected into it. We will create an abstract _BlocBase_ class for all our BLOCs to
 extend so we can enforce the dispose method to dispose a BLOC when no longer needed.
 ```
 abstract class BlocBase{
   void dispose();
+  void cancelOperation();
 }
 ```
-
-
+We also include a _cancelOperation_ method so currently running operations can be
+cancelled.\
+The image search screen will consist of two widgets, the _Image Search Widget_ and
+_Image Search Results_ widget, so we will be creating a BLOC for each one.
+The [ImageSearchPhraseBloc](https://github.com/olaide-ekolere/updaydevtask/blob/master/lib/bloc/image_search_phrase_bloc.dart)
+will hold the different states of the ImageSearchWidget which is represented by an enum
+```
+enum SearchStatus { Initialized, Fetching, Error, Done }
+```
+Then the
+[image_search_phrase_bloc_test.dart]()
+is written to check that all state changes are handled well.\
+Next we create the
 
 
 

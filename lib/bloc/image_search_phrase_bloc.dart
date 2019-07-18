@@ -8,13 +8,15 @@ enum SearchStatus { Initialized, Fetching, Error, Done }
 typedef ImageSearchResultObserver(ImageSearchResult imageSearchResult);
 
 class ImageSearchPhraseBloc extends BlocBase {
-  ImageSearchPhraseBloc() {
+  final ImageSearchDataProvider imageSearchDataProvider;
+
+  ImageSearchPhraseBloc(this.imageSearchDataProvider) {
     searchStatus = SearchStatus.Initialized;
   }
 
   //final SearchStatus _countPerPage = 20;
-  PublishSubject<SearchStatus> _searchStatusController =
-      PublishSubject<SearchStatus>();
+  ReplaySubject<SearchStatus> _searchStatusController =
+      ReplaySubject<SearchStatus>();
 
   Sink<SearchStatus> get _inSearchStatus => _searchStatusController.sink;
 
@@ -26,14 +28,13 @@ class ImageSearchPhraseBloc extends BlocBase {
     _searchStatusController.close();
   }
 
-  startSearchWithPhrase(
+  Future<void> startSearchWithPhrase(
     String searchPhrase,
     int pageCount,
-    ImageSearchDataProvider imageSearchDataProvider,
     ImageSearchResultObserver imageSearchResultObserver,
   ) async {
-    _inSearchStatus.add(SearchStatus.Fetching);
-    imageSearchDataProvider
+    searchStatus = SearchStatus.Fetching;
+    return imageSearchDataProvider
         .getImageSearchResults(
       searchPhrase,
       pageCount,
@@ -46,7 +47,7 @@ class ImageSearchPhraseBloc extends BlocBase {
         if (imageSearchResultObserver != null) {
           imageSearchResultObserver(imageSearchOperation.results);
         }
-        _inSearchStatus.add(SearchStatus.Done);
+        searchStatus = SearchStatus.Done;
       }
     });
   }

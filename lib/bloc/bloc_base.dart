@@ -1,4 +1,4 @@
 abstract class BlocBase{
   void dispose();
-  cancelOperation();
+  void cancelOperation();
 }
