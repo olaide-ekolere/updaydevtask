@@ -12,7 +12,7 @@ class MockImageSearchDataProvider extends Mock
     implements ImageSearchDataProvider {}
 
 var hint = "Type Search Phrase";
-
+var testPhrase = "test";
 Widget wrapWidget(Widget widget) {
   return MaterialApp(
     localizationsDelegates: [
@@ -31,8 +31,12 @@ Widget wrapWidget(Widget widget) {
 void main() {
   group('ImageSearchPhraseWidget', () {
     MockImageSearchDataProvider mockImageSearchDataProvider;
+    InitiateSearchObserver initiateSearchObserver;
+    String searchPhrase;
     setUp(() {
       mockImageSearchDataProvider = MockImageSearchDataProvider();
+      searchPhrase = null;
+      initiateSearchObserver = (newSearchPhrase)=>searchPhrase = newSearchPhrase;
     });
 
     testWidgets('Search Hint displayed and Search Button disabled at launch',
@@ -41,7 +45,7 @@ void main() {
         wrapWidget(
           BlocProvider(
             child: ImageSearchPhraseWidget(),
-            bloc: ImageSearchPhraseBloc(mockImageSearchDataProvider),
+            bloc: ImageSearchPhraseBloc(mockImageSearchDataProvider, initiateSearchObserver),
           ),
         ),
       );
@@ -59,7 +63,7 @@ void main() {
             wrapWidget(
               BlocProvider(
                 child: ImageSearchPhraseWidget(),
-                bloc: ImageSearchPhraseBloc(mockImageSearchDataProvider),
+                bloc: ImageSearchPhraseBloc(mockImageSearchDataProvider, initiateSearchObserver),
               ),
             ),
           );
@@ -80,6 +84,37 @@ void main() {
           await tester.pumpAndSettle();
 
           expect(find.byType(DisabledSearchButton), findsOneWidget);
+        });
+
+    testWidgets('Search phrase is set when search button is clicked',
+            (WidgetTester tester) async {
+          await tester.pumpWidget(
+            wrapWidget(
+              BlocProvider(
+                child: ImageSearchPhraseWidget(),
+                bloc: ImageSearchPhraseBloc(mockImageSearchDataProvider, initiateSearchObserver),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+
+          var searchTextFieldKey = Key('SearchTextField');
+          var searchButtonKey = Key('SearchButton');
+
+          expect(find.byKey(searchTextFieldKey), findsOneWidget);
+
+          await tester.enterText(find.byKey(searchTextFieldKey), testPhrase);
+
+          await tester.pumpAndSettle();
+
+          expect(find.byType(EnabledSearchButton), findsOneWidget);
+
+          await tester.tap(find.byKey(searchButtonKey));
+
+          //await tester.pumpAndSettle();
+
+          expect(searchPhrase, testPhrase);
+
         });
   });
 }

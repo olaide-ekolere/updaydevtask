@@ -33,14 +33,16 @@ main() {
   group('ImageSearchPhraseBloc Tests', () {
     ImageSearchPhraseBloc imageSearchPhraseBloc;
     MockImageSearchDataProvider mockImageSearchDataProvider;
-    ImageSearchResultObserver imageSearchResultObserver;
+    ImageSearchResultObserver imageSearchResultObserver = (result) {
+      imageSearchResult = result;
+    };
+    ;
     setUp(() {
       mockImageSearchDataProvider = MockImageSearchDataProvider();
-      imageSearchPhraseBloc =
-          ImageSearchPhraseBloc(mockImageSearchDataProvider);
-      imageSearchResultObserver = (result) {
-        imageSearchResult = result;
-      };
+      imageSearchPhraseBloc = ImageSearchPhraseBloc(
+        mockImageSearchDataProvider,
+        (_){},
+      );
     });
 
     tearDown(() {
@@ -54,13 +56,16 @@ main() {
       );
     });
 
-    test('fetching and done states when ok and fires observer', () async{
+    test('fetching and done states when ok and fires observer', () async {
       when(mockImageSearchDataProvider.getImageSearchResults(
               searchPhrase, pageCount, page))
           .thenAnswer((_) async => ImageSearchOperation(200, successResult));
 
       await imageSearchPhraseBloc.startSearchWithPhrase(
-          searchPhrase, pageCount, imageSearchResultObserver);
+        searchPhrase,
+        pageCount,
+        imageSearchResultObserver,
+      );
       expect(
           imageSearchPhraseBloc.outSearchStatus,
           emitsInOrder([
@@ -71,13 +76,18 @@ main() {
       expect(imageSearchResult.isEmpty, false);
     });
 
-    test('fetching and done states when ok and fires observer for another search', () async{
+    test(
+        'fetching and done states when ok and fires observer for another search',
+        () async {
       when(mockImageSearchDataProvider.getImageSearchResults(
-          searchPhrase, pageCount, page))
+              searchPhrase, pageCount, page))
           .thenAnswer((_) async => ImageSearchOperation(200, successResult));
 
       await imageSearchPhraseBloc.startSearchWithPhrase(
-          searchPhrase, pageCount, imageSearchResultObserver);
+        searchPhrase,
+        pageCount,
+        imageSearchResultObserver,
+      );
       expect(
           imageSearchPhraseBloc.outSearchStatus,
           emitsInOrder([
@@ -88,11 +98,15 @@ main() {
       expect(imageSearchResult.isEmpty, false);
 
       when(mockImageSearchDataProvider.getImageSearchResults(
-          searchPhraseTwo, pageCount, page))
-          .thenAnswer((_)  => Future.value(ImageSearchOperation(200, successResult)));
+              searchPhraseTwo, pageCount, page))
+          .thenAnswer(
+              (_) => Future.value(ImageSearchOperation(200, successResult)));
 
       await imageSearchPhraseBloc.startSearchWithPhrase(
-          searchPhraseTwo, pageCount, imageSearchResultObserver);
+        searchPhraseTwo,
+        pageCount,
+        imageSearchResultObserver,
+      );
       expect(
           imageSearchPhraseBloc.outSearchStatus,
           emitsInOrder([
@@ -105,14 +119,16 @@ main() {
       expect(imageSearchResult.isEmpty, false);
     });
 
-
-    test('fetching and done states when error occurs', () async{
+    test('fetching and done states when error occurs', () async {
       when(mockImageSearchDataProvider.getImageSearchResults(
-          searchPhrase, pageCount, page))
+              searchPhrase, pageCount, page))
           .thenAnswer((_) async => ImageSearchOperation(400, errorMessage));
 
       await imageSearchPhraseBloc.startSearchWithPhrase(
-          searchPhrase, pageCount, imageSearchResultObserver);
+        searchPhrase,
+        pageCount,
+        imageSearchResultObserver,
+      );
       expect(
           imageSearchPhraseBloc.outSearchStatus,
           emitsInOrder([

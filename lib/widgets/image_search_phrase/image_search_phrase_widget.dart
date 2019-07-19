@@ -12,22 +12,24 @@ class ImageSearchPhraseWidget extends StatefulWidget {
 }
 
 class _ImageSearchPhraseWidgetState extends State<ImageSearchPhraseWidget> {
-  final _textEditingController = TextEditingController();
+  final _searchPhraseController = TextEditingController();
   ImageSearchPhraseBloc _imageSearchPhraseBloc;
-  String searchPhrase ='';
+  String searchPhrase = '';
 
   var searchTextFieldKey = Key('SearchTextField');
+  var searchButtonKey = Key('SearchButton');
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _textEditingController.addListener(_searchPhraseChanged);
+    _searchPhraseController.addListener(_searchPhraseChanged);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    _textEditingController.dispose();
+    _searchPhraseController.dispose();
     _imageSearchPhraseBloc.dispose();
     super.dispose();
   }
@@ -67,13 +69,14 @@ class _ImageSearchPhraseWidgetState extends State<ImageSearchPhraseWidget> {
           Expanded(
             child: TextField(
               key: searchTextFieldKey,
-              controller: _textEditingController,
+              controller: _searchPhraseController,
               decoration: InputDecoration(
                   hintText: AppTranslations.of(context).text('search_hint')),
             ),
           ),
           searchPhrase.trim().length >= 2
               ? EnabledSearchButton(
+                  key: searchButtonKey,
                   buttonColor: kEnabledButton,
                   iconColor: kEnabledIcon,
                   onPressed: _startImageSearch,
@@ -89,9 +92,12 @@ class _ImageSearchPhraseWidgetState extends State<ImageSearchPhraseWidget> {
 
   _searchPhraseChanged() {
     setState(() {
-      searchPhrase = _textEditingController.text;
+      searchPhrase = _searchPhraseController.text;
     });
   }
 
-  _startImageSearch() {}
+  _startImageSearch() {
+    _imageSearchPhraseBloc.inSearchPhrase
+        .add(_searchPhraseController.text.trim());
+  }
 }
