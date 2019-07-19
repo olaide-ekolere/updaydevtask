@@ -39,6 +39,7 @@ void main() {
       initiateSearchObserver = (newSearchPhrase)=>searchPhrase = newSearchPhrase;
     });
 
+
     testWidgets('Search Hint displayed and Search Button disabled at launch',
         (WidgetTester tester) async {
       await tester.pumpWidget(

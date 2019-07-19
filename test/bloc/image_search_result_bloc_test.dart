@@ -41,7 +41,7 @@ main() {
     setUp(() {
       mockImageSearchDataProvider = MockImageSearchDataProvider();
       imageSearchResultBloc =
-          ImageSearchResultBloc(mockImageSearchDataProvider);
+          ImageSearchResultBloc(mockImageSearchDataProvider,(){});
     });
 
     tearDown(() {

@@ -16,8 +16,8 @@ class _ImageSearchPhraseWidgetState extends State<ImageSearchPhraseWidget> {
   ImageSearchPhraseBloc _imageSearchPhraseBloc;
   String searchPhrase = '';
 
-  var searchTextFieldKey = Key('SearchTextField');
-  var searchButtonKey = Key('SearchButton');
+  final searchTextFieldKey = Key('SearchTextField');
+  final searchButtonKey = Key('SearchButton');
 
   @override
   void initState() {

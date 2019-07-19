@@ -406,6 +406,100 @@ does not have a _dispose_ method as we plan to pair each BLOC with each
 Widget and the would need to be disposed off when the widget no longer
 exists
 
+### Widgets
+So our plan is to have 2 widgets on the ImageSearchPage, one to handle
+the handle initiating the image search using the search phrase and another
+to display the results and load more result pages.
+* [ImageSearchPhraseWidget](https://github.com/olaide-ekolere/updaydevtask/blob/master/lib/widgets/image_search_phrase/image_search_phrase_widget.dart)\
+This widget will accept the search phrase input by the user to initiate
+the image search. This widget will also be responsible for satisfying
+all the acceptance criteria of our first user story **(US_01)**.\
+So we create
+[image_search_phrase_widget_test.dart](https://github.com/olaide-ekolere/updaydevtask/tree/master/test/widgets/image_search_phrase)
+to test that
+  * Widget initializes correctly
+  * User is informed to type search word
+  * Search button is enabled when search can be initiated
+  * The search phrase is provided to initiate the image search
+
+It is good practise not to hardwire texts in the widgets so all our
+text will be provided by localization that we have already
+implemented which allows us to provide text for the different
+languages we want to support. So to test our widgets we will need
+to wrap it as shown below
+```
+var hint = "Type Search Phrase";
+Widget wrapWidget(Widget widget) {
+  return MaterialApp(
+    localizationsDelegates: [
+      AppTranslationsDelegate(
+          newLocale: application.supportedLocales().first, testValues: """
+          {"search_hint" : "$hint"}
+          """),
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+    ],
+    supportedLocales: application.supportedLocales(),
+    home: Scaffold(body: widget),
+  );
+}
+```
+and provide it with the texts the widget we are testing will be
+expecting. We added the _Scaffold_ because the widget currently
+being tested will require a Material ancestor since it doesnt
+contain one.
+* [ImageSearchResultsWidget]()\
+This widget will accept the first page of the image search result and
+will load the next pages and the user scrolls to the bottom of the list.\
+Firstly, we will create the
+[ImageResultListItemWidget]()
+which will be responsible for displaying each
+[ImageSearchItem](https://github.com/olaide-ekolere/updaydevtask/blob/master/lib/model/image_search_item.dart)
+returned from the search. The
+[cached_network_image](https://pub.dev/packages/cached_network_image)
+plugin is used so we can provide a placeholder while the image loads and
+also display an error is there is a problem with the image\
+So we also create
+[image_search_results_widget_test]()
+to test that
+  * It initializes with the first page results
+  * Load next page is fired when scrolled to the bottom
+
+* [ImageSearchPage]()\
+Both widgets above will be combined on this page. We will create
+a new BLOC for this page which will hold references to the BLOCs
+required for this page as shown below
+```
+import 'package:upday_dev_task/bloc/bloc_base.dart';
+import 'package:upday_dev_task/bloc/image_search_phrase_bloc.dart';
+import 'package:upday_dev_task/bloc/image_search_result_bloc.dart';
+
+class ImageSearchBloc extends BlocBase{
+  final ImageSearchPhraseBloc imageSearchPhraseBloc;
+  final ImageSearchResultBloc imageSearchResultBloc;
+  ImageSearchBloc({this.imageSearchPhraseBloc, this.imageSearchResultBloc});
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    imageSearchPhraseBloc.dispose();
+    imageSearchResultBloc.dispose();
+  }
+
+  @override
+  cancelOperation() {
+    // TODO: implement cancelOperation
+    imageSearchPhraseBloc.cancelOperation();
+    imageSearchResultBloc.cancelOperation();
+  }
+
+}
+```
+This way the BlocProvider can also be used as an ancestor for the
+ImageSearchPage
+
+
+
+
 
 
 
