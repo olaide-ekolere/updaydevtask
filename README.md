@@ -13,7 +13,9 @@ them in an infinite scrollable view
 
 Create an hybrid app for android and iOS using the flutter framework
 to implement the Shutterstock image search api\
-![Shot 1][Shot1] &nbsp; ![Shot 2][Shot2] &nbsp; ![Shot 3][Shot3] &nbsp; ![Shot 4][Shot4]
+![Shot 1][Shot1] &nbsp; ![Shot 2][Shot2] &nbsp; ![Shot 3][Shot3] &nbsp; ![Shot 4][Shot4]\
+The Android APK can be downloaded
+[here](https://webapp.diawi.com/install/nujZ36)
 
 **_Observation after cloning repo:_** The first thing you will
 notice is that 'main.dart' file which is the normal entry point of
@@ -505,9 +507,71 @@ BlocProvider(
     bloc: ImageSearchBloc(),
  );
 ```
+So running the app shos the ImageSearchPage which contains both the
+ImageSearchPhraseWidget for initiating a search and ImageSearchResultWidget
+for displaying the results and loading more images. We use the
+[NestedScrollView](https://api.flutter.dev/flutter/widgets/NestedScrollView-class.html)
+and [SliverAppBar](https://api.flutter.dev/flutter/material/SliverAppBar-class.html)
+so we can hide/show the appbar as user scrolls. This caused this
+[issue](https://github.com/flutter/flutter/issues/26409)
+for our load more logic to fail because we use a
+[ScrollController](https://api.flutter.dev/flutter/widgets/ScrollController-class.html)
+to implement it. So the logic was moved to the itemBuilder function.
 
+### Next Steps
+So this is where we will stop now due to time constraints but here are the
+things we would do next
+* The TextField can be updated to an
+[AutoCompleteTextField](https://pub.dev/packages/autocomplete_textfield)
+so user can initiate previous search words. A
+[SharedPreferences](https://pub.dev/packages/shared_preferences) would have
+been used to store the keywords as against using a database which would seem
+like an overkill for the task
+* The UI can be improved on and Animations added
+* Driver testers to perform integrated tests
 
+I hope you have as much fun going through the project as i had building it.
+### About Me
+![Me](https://i.ibb.co/MDRY4D3/me.jpg)
 
+I am
+[Olaide Nojeem Ekeolere][resume]
+, a hands-on, agile, learn-as-needed and highly competent software engineer
+with more than 10 years' experience in software designing, programming
+and testing software across a variety of platforms including all mobile
+phone platforms (Android, iOS, Windows Phone, J2ME, Blackberry 10 and
+Blackberry OS). I have worked on numerous projects including
+self-started projects from concept to completion. A specialist in C#,
+Java, Dart, Visual Basic.net, firebase and a little Objective C, ActionScript
+and Kotlin, I take pride in coding to consistently high standards and
+regularly refresh my skills to ensure I keep up with ongoing developments.
+* [My Resume][resume]
+* [LinkedIn][linkedin]
+
+I am currently the Lead Mobile App developer at
+[Wakanow](https://www.wakanow.com/en-ng/) managing
+their flutter hybrid B2B and B2C apps.
+###### Recent Apps
+* Wakanow B2C
+[Android](https://play.google.com/store/apps/details?id=com.wakanow.android)
+[iOS](https://apps.apple.com/ng/app/wakanow-mobile/id1467891138)\
+The official wakanow mobile app for booking flights, hotels, visas and get
+holiday packages
+* Wakanow B2B
+[Android](https://play.google.com/store/apps/details?id=com.wakanow.affiliate)
+[iOS](https://apps.apple.com/ng/app/wakanow-affiliates/id1469901513)\
+The wakanow app that lets you partner with wakanow to help customers book
+cheap flights and hotels.
+* Mila
+[Android](https://play.google.com/store/apps/details?id=com.vnigeria.milaapp)
+[iOS](https://apps.apple.com/us/app/imila/id1437379934)\
+iMila allows you to create events, invite attendees,
+invite ushers, scan attendees in and allow them to
+chat during the event.
+
+Most of the projects i have worked on are hosted in private repositories
+on Bitbucket and Azure Devops and would not be able to share but then
+again i am always proud of my latest code too.
 
 
 
@@ -521,6 +585,8 @@ BlocProvider(
 [English]: https://i.ibb.co/K9NgvSH/english.png
 [German]: https://i.ibb.co/pf5BGP7/german.png
 [Spanish]: https://i.ibb.co/7CBSg6C/spanish.png
+[resume]: https://www.scribd.com/document/419239420/EKEOLERE-OLAIDE-NOJEEM
+[linkedin]: https://www.linkedin.com/in/olaide-ekeolere-92ba0a37/
 
 
 
