@@ -511,11 +511,11 @@ BlocProvider(
 
 
 
-
-[Shot1]: https://ibb.co/FzNKcQN
-[SHot2]: https://ibb.co/myYXnZL
-[Shot3]: https://ibb.co/B3TQtdY
-[Shot4]: https://ibb.co/nkKrGZJ
+|
+[Shot1]: https://i.ibb.co/fHB2Z3B/Simulator-Screen-Shot-i-Phone-Xs-Max-2019-07-21-at-11-06-31.png
+[SHot2]: https://i.ibb.co/09WF04g/Simulator-Screen-Shot-i-Phone-Xs-Max-2019-07-21-at-11-08-22.png
+[Shot3]: https://i.ibb.co/kBqwxkP/Simulator-Screen-Shot-i-Phone-Xs-Max-2019-07-21-at-11-16-52.png
+[Shot4]: https://i.ibb.co/NYGxvQB/Simulator-Screen-Shot-i-Phone-Xs-Max-2019-07-21-at-11-17-17.png
 
 
 
