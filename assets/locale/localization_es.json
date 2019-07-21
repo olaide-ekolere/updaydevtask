@@ -1,5 +1,10 @@
 {
   "app_name" : "upday developer task",
-  "by_text" : "by",
-  "author" : "Olaide Nojeem Ekeolere"
+  "app_text" : "imágenes",
+  "by_text" : "Por",
+  "author" : "Olaide Nojeem Ekeolere",
+  "search_hint" : "Tipo de búsqueda",
+  "no_search_results" : "No se encontraron resultados para su búsqueda",
+  "no_search_init" : "Ninguna búsqueda iniciada\n",
+  "error_text" : "Ups! Algo pasó. Inténtalo de nuevo"
 }

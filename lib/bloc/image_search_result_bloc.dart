@@ -7,21 +7,25 @@ import 'package:upday_dev_task/model/Image_search_result.dart';
 import 'package:upday_dev_task/model/image_search_item.dart';
 
 typedef LoadNextPageObserver();
+
 class ImageSearchResultBloc extends BlocBase {
   final ImageSearchDataProvider imageSearchDataProvider;
-  final LoadNextPageObserver loadNextPageObserver;
-  ImageSearchResultBloc(this.imageSearchDataProvider, this.loadNextPageObserver) {
-    _outLoadMore.listen((_){loadNextPageObserver();});
+
+  //final LoadNextPageObserver loadNextPageObserver;
+  final int pageCount;
+
+  ImageSearchResultBloc(this.imageSearchDataProvider, this.pageCount) {
+    outLoadMore.listen((_) {
+      loadNextPage();
+    });
+    _inImageSearchResult.add(ImageSearchResult());
   }
-
-
-
 
   final _loadMoreStreamController = StreamController<void>.broadcast();
 
   StreamSink<void> get inLoadMore => _loadMoreStreamController.sink;
 
-  Stream<void> get _outLoadMore => _loadMoreStreamController.stream;
+  Stream<void> get outLoadMore => _loadMoreStreamController.stream;
 
   BehaviorSubject<ImageSearchResult> _imageSearchResultController =
       BehaviorSubject<ImageSearchResult>();
@@ -47,31 +51,29 @@ class ImageSearchResultBloc extends BlocBase {
     _inImageSearchResult.add(_imageSearchResult);
   }
 
-  loadNextPage() async {
+  Future<void> loadNextPage() async {
+    ImageSearchResult clone = ImageSearchResult.clone(_imageSearchResult);
     _imageSearchResult.loadingMore = true;
-    _inImageSearchResult.add(_imageSearchResult);
 
-    imageSearchDataProvider.getImageSearchResults(
+    return imageSearchDataProvider
+        .getImageSearchResults(
       _imageSearchResult.searchPhrase,
       _imageSearchResult.countPerPage,
       _imageSearchResult.currentPage + 1,
-    ).then((imageSearchOperation){
+    )
+        .then((imageSearchOperation) {
       _imageSearchResult.loadingMore = false;
-      if(imageSearchOperation.succeeded){
-        _addNextPage(imageSearchOperation.results.imageSearchItems);
-      }
-      else{
+      if (imageSearchOperation.succeeded) {
+        clone.addNextPage(imageSearchOperation.results.imageSearchItems);
+        _imageSearchResult = clone;
+        _inImageSearchResult.add(_imageSearchResult);
+      } else {
         _inImageSearchResult.add(_imageSearchResult);
       }
-
+    }).catchError((_) {
+      _imageSearchResult.loadingMore = false;
+      _inImageSearchResult.add(_imageSearchResult);
     });
-  }
-
-  _addNextPage(
-    List<ImageSearchItem> imageSearchItems,
-  ) {
-    _imageSearchResult.addNextPage(imageSearchItems);
-    _inImageSearchResult.add(_imageSearchResult);
   }
 
   @override

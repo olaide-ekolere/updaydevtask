@@ -41,7 +41,7 @@ main() {
     setUp(() {
       mockImageSearchDataProvider = MockImageSearchDataProvider();
       imageSearchResultBloc =
-          ImageSearchResultBloc(mockImageSearchDataProvider,(){});
+          ImageSearchResultBloc(mockImageSearchDataProvider,pageCount);
     });
 
     tearDown(() {
@@ -53,15 +53,26 @@ main() {
       expect(imageSearchResultBloc.outImageSearchResult, emits(firstPage));
     });
 
-    test('Successfully loads second page', () async{
+    test('Successfully loads second page', () {
       imageSearchResultBloc.initWithImageSearchItems(firstPage);
 
       when(mockImageSearchDataProvider.getImageSearchResults(
           searchPhrase, pageCount, firstPage.currentPage+1))
           .thenAnswer((_) async => ImageSearchOperation(200, secondPage));
 
-      await imageSearchResultBloc.loadNextPage();
-      expect(imageSearchResultBloc.outImageSearchResult, emits(firstPage..addNextPage(secondPage.imageSearchItems)));
+       imageSearchResultBloc.loadNextPage();
+      expect(imageSearchResultBloc.outImageSearchResult, emits(firstPage));
+    });
+
+    test('Handles error', () {
+      imageSearchResultBloc.initWithImageSearchItems(firstPage);
+
+      when(mockImageSearchDataProvider.getImageSearchResults(
+          searchPhrase, pageCount, firstPage.currentPage+1))
+          .thenAnswer((_) async => ImageSearchOperation(400, ''));
+
+      imageSearchResultBloc.loadNextPage();
+      expect(imageSearchResultBloc.outImageSearchResult, emits(firstPage));
     });
   });
 }

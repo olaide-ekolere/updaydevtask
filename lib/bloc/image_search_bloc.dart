@@ -1,24 +1,36 @@
+import 'dart:async';
 
 import 'package:upday_dev_task/bloc/bloc_base.dart';
-import 'package:upday_dev_task/bloc/image_search_phrase_bloc.dart';
-import 'package:upday_dev_task/bloc/image_search_result_bloc.dart';
+import 'package:rxdart/subjects.dart';
+import 'package:upday_dev_task/model/image_search.dart';
 
-class ImageSearchBloc extends BlocBase{
-  final ImageSearchPhraseBloc imageSearchPhraseBloc;
-  final ImageSearchResultBloc imageSearchResultBloc;
-  ImageSearchBloc({this.imageSearchPhraseBloc, this.imageSearchResultBloc});
+
+
+class ImageSearchBloc extends BlocBase {
+
+  ImageSearchBloc(ImageSearch imageSearch){
+    _inImageSearch.add(imageSearch);
+  }
+  final _searchClickedStreamController = StreamController<String>.broadcast();
+
+  //final ImageSearch _countPerPage = 20;
+  BehaviorSubject<ImageSearch> _searchStatusController =
+  BehaviorSubject<ImageSearch>();
+
+  Sink<ImageSearch> get _inImageSearch => _searchStatusController.sink;
+
+  Stream<ImageSearch> get outImageSearch => _searchStatusController.stream;
+
   @override
   void dispose() {
     // TODO: implement dispose
-    imageSearchPhraseBloc.dispose();
-    imageSearchResultBloc.dispose();
+    _searchStatusController.close();
+    _searchClickedStreamController.close();
   }
 
   @override
   cancelOperation() {
     // TODO: implement cancelOperation
-    imageSearchPhraseBloc.cancelOperation();
-    imageSearchResultBloc.cancelOperation();
+    return null;
   }
-
 }

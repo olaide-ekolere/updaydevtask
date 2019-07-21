@@ -12,26 +12,32 @@ typedef ImageSearchResultObserver(ImageSearchResult imageSearchResult);
 
 class ImageSearchPhraseBloc extends BlocBase {
   final ImageSearchDataProvider imageSearchDataProvider;
-  final InitiateSearchObserver initiateSearchObserver;
+  final int pageCount;
+  //final InitiateSearchObserver initiateSearchObserver;
 
   ImageSearchPhraseBloc(
     this.imageSearchDataProvider,
-    this.initiateSearchObserver,
-  ) : assert(imageSearchDataProvider!=null),
-  assert(initiateSearchObserver!=null){
+    this.pageCount,
+    //this.initiateSearchObserver,
+  ) : assert(imageSearchDataProvider!=null)
+  {
     searchStatus = SearchStatus.Initialized;
-    _outSearchPhrase.listen((searchPhrase){
-      initiateSearchObserver(searchPhrase);
-    });
+    outSearchPhrase.listen((searchPhrase)=>startSearchWithPhrase(searchPhrase, pageCount));
   }
 
   final _searchClickedStreamController = StreamController<String>.broadcast();
 
   StreamSink<String> get inSearchPhrase => _searchClickedStreamController.sink;
 
-  Stream<String> get _outSearchPhrase => _searchClickedStreamController.stream;
+  Stream<String> get outSearchPhrase => _searchClickedStreamController.stream;
 
-  //final SearchStatus _countPerPage = 20;
+
+  final _imageSearchResultStreamController = StreamController<ImageSearchResult>.broadcast();
+
+  StreamSink<ImageSearchResult> get _inImageSearchResult => _imageSearchResultStreamController.sink;
+
+  Stream<ImageSearchResult> get outImageSearchResult => _imageSearchResultStreamController.stream;
+
   ReplaySubject<SearchStatus> _searchStatusController =
       ReplaySubject<SearchStatus>();
 
@@ -43,13 +49,13 @@ class ImageSearchPhraseBloc extends BlocBase {
   void dispose() {
     // TODO: implement dispose
     _searchStatusController.close();
+    _imageSearchResultStreamController.close();
     _searchClickedStreamController.close();
   }
 
   Future<void> startSearchWithPhrase(
     String searchPhrase,
     int pageCount,
-      ImageSearchResultObserver imageSearchResultObserver,
   ) async {
     searchStatus = SearchStatus.Fetching;
     return imageSearchDataProvider
@@ -60,13 +66,16 @@ class ImageSearchPhraseBloc extends BlocBase {
     )
         .then((imageSearchOperation) {
       if (imageSearchOperation == null || !imageSearchOperation.succeeded) {
+        _inImageSearchResult.add(ImageSearchResult(searchPhrase: searchPhrase));
         _inSearchStatus.add(SearchStatus.Error);
       } else {
-        if (imageSearchResultObserver != null) {
-          imageSearchResultObserver(imageSearchOperation.results);
-        }
+        _inImageSearchResult.add(imageSearchOperation.results);
         searchStatus = SearchStatus.Done;
       }
+    })
+    .catchError((error){
+      _inImageSearchResult.add(ImageSearchResult(searchPhrase: searchPhrase));
+      _inSearchStatus.add(SearchStatus.Error);
     });
   }
 

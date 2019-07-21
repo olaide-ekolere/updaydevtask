@@ -14,10 +14,12 @@ class ImageSearchPhraseWidget extends StatefulWidget {
 class _ImageSearchPhraseWidgetState extends State<ImageSearchPhraseWidget> {
   final _searchPhraseController = TextEditingController();
   ImageSearchPhraseBloc _imageSearchPhraseBloc;
+  SearchStatus _searchStatus;
   String searchPhrase = '';
 
   final searchTextFieldKey = Key('SearchTextField');
   final searchButtonKey = Key('SearchButton');
+  final searchInitKey = Key('SearchInit');
 
   @override
   void initState() {
@@ -42,6 +44,7 @@ class _ImageSearchPhraseWidgetState extends State<ImageSearchPhraseWidget> {
       stream: _imageSearchPhraseBloc.outSearchStatus,
       builder: (context, AsyncSnapshot<SearchStatus> snapshot) {
         if (snapshot.hasData) {
+          _searchStatus = snapshot.data;
           return _buildSearchPhraseWidget();
         } else {
           return _buildLoading();
@@ -59,35 +62,46 @@ class _ImageSearchPhraseWidgetState extends State<ImageSearchPhraseWidget> {
   }
 
   Widget _buildSearchPhraseWidget() {
-    return Container(
-      padding: EdgeInsets.all(
-        16.0,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(
-            child: TextField(
-              key: searchTextFieldKey,
-              controller: _searchPhraseController,
-              decoration: InputDecoration(
-                  hintText: AppTranslations.of(context).text('search_hint')),
-            ),
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Expanded(
+          child: TextField(
+            key: searchTextFieldKey,
+            controller: _searchPhraseController,
+            decoration: InputDecoration(
+                hintText: AppTranslations.of(context).text('search_hint')),
           ),
-          searchPhrase.trim().length >= 2
-              ? EnabledSearchButton(
-                  key: searchButtonKey,
-                  buttonColor: kEnabledButton,
-                  iconColor: kEnabledIcon,
-                  onPressed: _startImageSearch,
-                )
-              : DisabledSearchButton(
-                  buttonColor: kDisabledButton,
-                  iconColor: kDisabledIcon,
-                )
-        ],
-      ),
+        ),
+        SizedBox(
+          width: 16.0,
+        ),
+        _determineWidgetToDisplay(),
+      ],
     );
+  }
+
+  _determineWidgetToDisplay() {
+    if (_searchStatus == SearchStatus.Fetching) {
+      return Container(
+        key: searchInitKey,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else if (searchPhrase.trim().length >= 2) {
+      return EnabledSearchButton(
+        key: searchButtonKey,
+        buttonColor: Theme.of(context).accentColor,
+        iconColor: Colors.white,
+        onPressed: _startImageSearch,
+      );
+    } else {
+      return DisabledSearchButton(
+        buttonColor: Colors.transparent,
+        iconColor: Colors.white,
+      );
+    }
   }
 
   _searchPhraseChanged() {
@@ -97,6 +111,7 @@ class _ImageSearchPhraseWidgetState extends State<ImageSearchPhraseWidget> {
   }
 
   _startImageSearch() {
+    FocusScope.of(context).requestFocus(new FocusNode());
     _imageSearchPhraseBloc.inSearchPhrase
         .add(_searchPhraseController.text.trim());
   }

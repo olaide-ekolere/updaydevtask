@@ -5,9 +5,24 @@ class ImageSearchResult {
   final int countPerPage;
   final int totalNumberPages;
 
-  List<ImageSearchItem> _imageSearchItems = [];
+  List<ImageSearchItem> _imageSearchItems;
   int _currentPage;
   bool loadingMore = false;
+
+  ImageSearchResult(
+      {this.countPerPage = 0,
+      this.searchPhrase = '',
+      this.totalNumberPages = 0});
+
+  ImageSearchResult.clone(ImageSearchResult imageSearchResult)
+      : searchPhrase = imageSearchResult.searchPhrase,
+        countPerPage = imageSearchResult.countPerPage,
+        totalNumberPages = imageSearchResult.totalNumberPages,
+        _currentPage = imageSearchResult.currentPage,
+        loadingMore = imageSearchResult.loadingMore,
+        _imageSearchItems = imageSearchResult.imageSearchItems
+            .map((imageSearchItem) => imageSearchItem)
+            .toList();
 
   ImageSearchResult.initWithImageSearchItems(
     List<ImageSearchItem> imageSearchItems, {
@@ -19,7 +34,7 @@ class ImageSearchResult {
         assert(countPerPage != null),
         assert(imageSearchItems != null) {
     this._currentPage = currentPage;
-    _imageSearchItems.addAll(imageSearchItems);
+    this._imageSearchItems = imageSearchItems;
   }
 
   addNextPage(
@@ -29,6 +44,7 @@ class ImageSearchResult {
         (_currentPage != (totalNumberPages - 1) &&
             imageSearchItems.length == countPerPage));
     _currentPage += 1;
+    _imageSearchItems.addAll(imageSearchItems);
   }
 
   bool get isEmpty => _imageSearchItems.length == 0;

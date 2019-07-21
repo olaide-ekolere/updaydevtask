@@ -31,12 +31,12 @@ class ShutterStockDataProvider extends ImageSearchDataProvider {
     int page,
   ) async {
     var url =
-        'https://api.shutterstock.com/v2/images/search?query=$searchPhrase&per_page=$pageCount&page=$page';
+        'https://api.shutterstock.com/v2/images/search?query=$searchPhrase&per_page=$pageCount&page=$page&sort=popular&orientation=horizontal';
     var header = Map<String, String>();
     header['Content-Type'] = 'application/json';
     String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$clientId:$clientSecret'));
-    header["Authorization"] = "Basic $basicAuth";
+    header["Authorization"] =  basicAuth;
     var response = await client
         .get(url, headers: header)
         .timeout(Duration(minutes: 2), onTimeout: () async {

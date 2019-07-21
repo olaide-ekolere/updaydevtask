@@ -68,7 +68,7 @@ main(){
       header['Content-Type'] = 'application/json';
       String basicAuth =
           'Basic ' + base64Encode(utf8.encode('$clientId:$clientSecret'));
-      header["Authorization"] = "Basic $basicAuth";
+      header["Authorization"] = basicAuth;
       client = MockClient();
       preferences = MockPreferences();
       shutterStockDataProvider = ShutterStockDataProvider(preferences, client, clientId: clientId, clientSecret: clientSecret);

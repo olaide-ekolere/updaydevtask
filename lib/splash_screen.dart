@@ -1,17 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'dart:ui' as ui;
+import 'package:upday_dev_task/bloc/bloc.dart';
 import 'package:upday_dev_task/localization/app_translations.dart';
+import 'package:upday_dev_task/localization/application.dart';
+import 'package:upday_dev_task/model/image_search.dart';
+import 'package:upday_dev_task/page/image_search_page.dart';
 
 import 'colors.dart';
 
 class SplashPage extends StatefulWidget {
-  final SharedPreferences preferences;
-  final http.Client client;
+  final ImageSearch imageSearch;
 
-  SplashPage(this.preferences, this.client);
+  SplashPage(this.imageSearch,);
 
   @override
   _SplashPageState createState() => _SplashPageState();
@@ -22,7 +25,24 @@ class _SplashPageState extends State<SplashPage> {
   String title;
   bool errorOccurred = false;
 
-  _handleNavigation() async {}
+  _handleNavigation() async {
+    Locale myLocale = Localizations.localeOf(context);
+    print('Language Code: ${myLocale.languageCode}');
+    if(application.supportedLanguages.containsKey(myLocale.languageCode)) {
+      //application.onLocaleChanged(myLocale);
+    }
+    Locale locale = ui.window.locale;
+    print('Language Code: ${locale.languageCode}');
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => _launchImageSearchPage()));
+  }
+
+  Widget _launchImageSearchPage() {
+    return BlocProvider(
+      child: ImageSearchPage(),
+      bloc: ImageSearchBloc(widget.imageSearch),
+    );
+  }
 
   _startTimeout() async {
     var duration = Duration(
@@ -39,6 +59,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     _startTimeout();
   }
 
@@ -46,7 +67,6 @@ class _SplashPageState extends State<SplashPage> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    title = AppTranslations.of(context).text('affiliate_text');
   }
 
   @override
@@ -59,7 +79,7 @@ class _SplashPageState extends State<SplashPage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       body: Container(
-        color: kBackgroundWhite,
+        color: Colors.transparent,
         child: SafeArea(
           child: Center(
             child: Column(
@@ -76,26 +96,17 @@ class _SplashPageState extends State<SplashPage> {
                 Text(
                   AppTranslations.of(context).text('app_name'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24.0 / MediaQuery.of(context).textScaleFactor,
-                  ),
+                  style: Theme.of(context).textTheme.body2,
                 ),
                 Text(
                   AppTranslations.of(context).text('by_text'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24.0 / MediaQuery.of(context).textScaleFactor,
-                  ),
+                  style: Theme.of(context).textTheme.body2,
                 ),
                 Text(
                   AppTranslations.of(context).text('author'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24.0 / MediaQuery.of(context).textScaleFactor,
-                  ),
+                  style: Theme.of(context).textTheme.body2,
                 ),
               ],
             ),

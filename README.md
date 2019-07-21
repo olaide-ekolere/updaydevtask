@@ -448,11 +448,11 @@ and provide it with the texts the widget we are testing will be
 expecting. We added the _Scaffold_ because the widget currently
 being tested will require a Material ancestor since it doesnt
 contain one.
-* [ImageSearchResultsWidget]()\
+* [ImageSearchResultsWidget](https://github.com/olaide-ekolere/updaydevtask/blob/master/lib/widgets/image_results/image_search_results_widget.dart)\
 This widget will accept the first page of the image search result and
 will load the next pages and the user scrolls to the bottom of the list.\
 Firstly, we will create the
-[ImageResultListItemWidget]()
+[ImageResultListItemWidget](https://github.com/olaide-ekolere/updaydevtask/blob/master/lib/widgets/image_results/image_result_list_item_widget.dart)
 which will be responsible for displaying each
 [ImageSearchItem](https://github.com/olaide-ekolere/updaydevtask/blob/master/lib/model/image_search_item.dart)
 returned from the search. The
@@ -460,42 +460,46 @@ returned from the search. The
 plugin is used so we can provide a placeholder while the image loads and
 also display an error is there is a problem with the image\
 So we also create
-[image_search_results_widget_test]()
+[image_search_results_widget_test](https://github.com/olaide-ekolere/updaydevtask/blob/master/test/widgets/image_results/image_search_results_widget_test.dart)
 to test that
+  * Displays a no search message on start
+  * Displays no search results message for no results
   * It initializes with the first page results
   * Load next page is fired when scrolled to the bottom
 
-* [ImageSearchPage]()\
+* [ImageSearchPage](https://github.com/olaide-ekolere/updaydevtask/blob/master/lib/page/image_search_page.dart)\
 Both widgets above will be combined on this page. We will create
-a new BLOC for this page which will hold references to the BLOCs
+a new Object for this page which will hold references to the BLOCs
 required for this page as shown below
 ```
-import 'package:upday_dev_task/bloc/bloc_base.dart';
-import 'package:upday_dev_task/bloc/image_search_phrase_bloc.dart';
-import 'package:upday_dev_task/bloc/image_search_result_bloc.dart';
+import 'package:upday_dev_task/bloc/bloc.dart';
 
-class ImageSearchBloc extends BlocBase{
+class ImageSearch {
   final ImageSearchPhraseBloc imageSearchPhraseBloc;
   final ImageSearchResultBloc imageSearchResultBloc;
-  ImageSearchBloc({this.imageSearchPhraseBloc, this.imageSearchResultBloc});
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    imageSearchPhraseBloc.dispose();
-    imageSearchResultBloc.dispose();
-  }
 
-  @override
-  cancelOperation() {
-    // TODO: implement cancelOperation
-    imageSearchPhraseBloc.cancelOperation();
-    imageSearchResultBloc.cancelOperation();
+  ImageSearch({this.imageSearchPhraseBloc, this.imageSearchResultBloc}) :
+  assert(imageSearchPhraseBloc!=null),
+  assert(imageSearchResultBloc!=null){
+    imageSearchPhraseBloc.outImageSearchResult.listen(
+      (imageSearchResult) =>
+          imageSearchResultBloc.initWithImageSearchItems(imageSearchResult),
+    );
   }
-
 }
 ```
-This way the BlocProvider can also be used as an ancestor for the
-ImageSearchPage
+and then create a BLOC for this object. We set up the communication
+between both BLOCs in the constructor so that the ImageSearchPhraseBloc
+can pass the result of the first page to the ImageSearchResultBloc
+This way the
+BlocProvider can also be used as an ancestor for the
+ImageSearchPage as shown below
+```
+BlocProvider(
+    child: ImageSearchPage(),
+    bloc: ImageSearchBloc(),
+ );
+```
 
 
 
