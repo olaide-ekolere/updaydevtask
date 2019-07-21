@@ -1,0 +1,10 @@
+{
+  "app_name" : "upday developer task",
+  "app_text" : "Bildersuche",
+  "by_text" : "durch",
+  "author" : "Olaide Nojeem Ekeolere",
+  "search_hint" : "Suchphrase eingeben\n",
+  "no_search_results" : "Keine Ergebnisse zu deiner Suche gefunden",
+  "no_search_init" : "Keine Suche eingeleitet",
+  "error_text" : "Hoppla !!! Etwas passiert. Bitte versuche es erneut"
+}

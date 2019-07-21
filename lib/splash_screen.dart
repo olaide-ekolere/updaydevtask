@@ -29,10 +29,10 @@ class _SplashPageState extends State<SplashPage> {
     Locale myLocale = Localizations.localeOf(context);
     print('Language Code: ${myLocale.languageCode}');
     if(application.supportedLanguages.containsKey(myLocale.languageCode)) {
-      //application.onLocaleChanged(myLocale);
+      application.onLocaleChanged(myLocale);
     }
-    Locale locale = ui.window.locale;
-    print('Language Code: ${locale.languageCode}');
+    //Locale locale = ui.window.locale;
+    //print('Language Code: ${locale.languageCode}');
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => _launchImageSearchPage()));
   }

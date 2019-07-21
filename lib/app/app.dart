@@ -66,7 +66,7 @@ class _UpdayTaskAppState extends State<UpdayTaskApp> {
   void initState() {
     super.initState();
     _newLocaleDelegate = AppTranslationsDelegate(
-        newLocale: application.supportedLocales().last);
+        newLocale: application.supportedLocales().first);
     application.onLocaleChanged = onLocaleChange;
   }
 

@@ -18,6 +18,7 @@ class ImageResultListItemWidget extends StatelessWidget {
       child: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Expanded(
               child: CachedNetworkImage(

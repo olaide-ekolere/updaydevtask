@@ -12,6 +12,7 @@ class Application {
 
   final Map<String, String> supportedLanguages = {
     "en": "English",
+    "de": "German",
     "es": "Spanish",
   };
 
