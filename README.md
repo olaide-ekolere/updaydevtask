@@ -13,10 +13,7 @@ them in an infinite scrollable view
 
 Create an hybrid app for android and iOS using the flutter framework
 to implement the Shutterstock image search api\
-![Shot 1][Shot1]
-![Shot 2][Shot2]
-![Shot 3][Shot3]
-![Shot 4][Shot4]
+![Shot 1][Shot1] &nbsp; ![Shot 2][Shot2] &nbsp; ![Shot 3][Shot3] &nbsp; ![Shot 4][Shot4]
 
 **_Observation after cloning repo:_** The first thing you will
 notice is that 'main.dart' file which is the normal entry point of
@@ -64,7 +61,11 @@ Full details on how to implement app localization can be found
 at this [link](https://proandroiddev.com/flutter-localization-step-by-step-30f95d06018d).
 Unlike the link we will be storing our own language specific text in
 a json text files located in the _assets/locale_ folder for each supported
-language. For now we will only be supporting English and Spanish.
+language. For now we will only be supporting English German and Spanish.
+
+| English          | German           | Spanish          |
+| ---------------- | ---------------- | ---------------- |
+| ![Shot 1][English] | ![Shot 2][German] | ![Shot 3][Spanish] |
 
 ### User Stories
 For this task we have come up with 2 user stories
@@ -511,11 +512,15 @@ BlocProvider(
 
 
 
-|
-[Shot1]: https://i.ibb.co/fHB2Z3B/Simulator-Screen-Shot-i-Phone-Xs-Max-2019-07-21-at-11-06-31.png
-[SHot2]: https://i.ibb.co/09WF04g/Simulator-Screen-Shot-i-Phone-Xs-Max-2019-07-21-at-11-08-22.png
-[Shot3]: https://i.ibb.co/kBqwxkP/Simulator-Screen-Shot-i-Phone-Xs-Max-2019-07-21-at-11-16-52.png
-[Shot4]: https://i.ibb.co/NYGxvQB/Simulator-Screen-Shot-i-Phone-Xs-Max-2019-07-21-at-11-17-17.png
+
+[Shot1]: https://i.ibb.co/smBLBFM/shot1.png
+[SHot2]: https://i.ibb.co/2kQTbJ2/dhot2.png
+[Shot3]: https://i.ibb.co/prF5srx/shot3.png
+[Shot4]: https://i.ibb.co/98hJydT/shot4.png
+
+[English]: https://i.ibb.co/K9NgvSH/english.png
+[German]: https://i.ibb.co/pf5BGP7/german.png
+[Spanish]: https://i.ibb.co/7CBSg6C/spanish.png
 
 
 
