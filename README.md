@@ -12,7 +12,11 @@ them in an infinite scrollable view
 ## Solution
 
 Create an hybrid app for android and iOS using the flutter framework
-to implement the Shutterstock image search api
+to implement the Shutterstock image search api\
+![Shot 1][Shot1]
+![Shot 2][Shot2]
+![Shot 3][Shot3]
+![Shot 4][Shot4]
 
 **_Observation after cloning repo:_** The first thing you will
 notice is that 'main.dart' file which is the normal entry point of
@@ -507,6 +511,11 @@ BlocProvider(
 
 
 
+
+[Shot1]: https://ibb.co/FzNKcQN
+[SHot2]: https://ibb.co/myYXnZL
+[Shot3]: https://ibb.co/B3TQtdY
+[Shot4]: https://ibb.co/nkKrGZJ
 
 
 
