@@ -1,6 +1,6 @@
 # upday dev task
 
-A flutter developer task for employment at upday
+A simple image search app
 
 ## Problem
 
